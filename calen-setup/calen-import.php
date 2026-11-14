@@ -81,6 +81,29 @@ add_action(
 	60
 );
 
+/** Shopee rating and sales shown next to prices, copied once from the data file (figures from 14/11/2026). */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_shopee_proof_v1' ) || ! function_exists( 'wc_get_product_id_by_sku' ) ) {
+			return;
+		}
+		$data = calen_import_data();
+		if ( ! $data ) {
+			return;
+		}
+		update_option( 'calen_shopee_proof_v1', gmdate( 'c' ) );
+		foreach ( $data['products'] as $item ) {
+			$id = wc_get_product_id_by_sku( 'SP-' . $item['shopee_id'] );
+			if ( $id ) {
+				update_post_meta( $id, 'calen_shopee_rating', $item['rating'] );
+				update_post_meta( $id, 'calen_shopee_sold', $item['sold'] );
+			}
+		}
+	},
+	61
+);
+
 /** Sets every product to CALEN_FLAT_PRICE and clears sale prices. */
 function calen_import_flat_price() {
 	// Runs once only, so later prices set by the owner in WP Admin are never overwritten. storefront_v3 already applied it.

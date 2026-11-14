@@ -19,6 +19,50 @@ require_once __DIR__ . '/calen-composition.php';
 
 const CALEN_COMPOSITION_COLORS = array( '#3f5d32', '#c8963e', '#7a8f5c', '#b5654a', '#5a6352', '#d9c38a' );
 
+/** "★ 4.9 · Đã bán 10k+" from the Shopee listing (meta written by the importer); empty when unknown. */
+function calen_shopee_proof( WC_Product $product ): string {
+	$rating = trim( (string) $product->get_meta( 'calen_shopee_rating' ) );
+	$sold   = trim( (string) $product->get_meta( 'calen_shopee_sold' ) );
+	$parts  = array_filter( array( $rating ? '★ ' . $rating : '', $sold ? 'Đã bán ' . $sold : '' ) );
+	return implode( ' · ', $parts );
+}
+
+/** Freeship tag on each product photo in lists. */
+add_action(
+	'woocommerce_before_shop_loop_item_title',
+	function () {
+		echo '<span class="cl-tag">Freeship</span>';
+	},
+	5
+);
+
+/** Shopee rating and sales under the price in lists. */
+add_action(
+	'woocommerce_after_shop_loop_item_title',
+	function () {
+		global $product;
+		$proof = $product ? calen_shopee_proof( $product ) : '';
+		if ( $proof ) {
+			echo '<span class="cl-sold">' . esc_html( $proof ) . '</span>';
+		}
+	},
+	11
+);
+
+/** Shopee rating, sales and free shipping right under the price on the product page. */
+add_action(
+	'woocommerce_single_product_summary',
+	function () {
+		global $product;
+		if ( ! $product ) {
+			return;
+		}
+		$proof = calen_shopee_proof( $product );
+		echo '<p class="cl-pricenote">' . ( $proof ? '<span>' . esc_html( $proof ) . ' trên Shopee</span>' : '' ) . '<span class="cl-pricenote__ship">Miễn phí giao hàng</span></p>';
+	},
+	11
+);
+
 function calen_meta( string $key ): string {
 	global $product;
 	return $product ? trim( (string) $product->get_meta( $key ) ) : '';

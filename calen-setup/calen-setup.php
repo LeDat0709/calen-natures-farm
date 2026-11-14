@@ -23,6 +23,7 @@ if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (
 	require_once __DIR__ . '/calen-shop.php';
 	require_once __DIR__ . '/calen-import.php';
 	require_once __DIR__ . '/calen-checkout.php';
+	require_once __DIR__ . '/calen-seo.php';
 }
 
 // HTML was going out with max-age=604800, so browsers kept prices and cart counts for a week.

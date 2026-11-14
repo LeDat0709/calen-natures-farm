@@ -89,7 +89,7 @@ add_action(
 			wp_enqueue_script( 'wc-cart-fragments' ); // pages come from the CDN cache, so the header cart count must refresh in the browser
 		}
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '2.4.0' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '2.5.0' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );

@@ -342,3 +342,17 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .main-navigation .current-menu-item > a { color: var(--cl-ink) !important; }
 /* Mobile slide-out menu links too */
 .mobile-navigation .menu-item > a { color: var(--cl-ink) !important; font-weight: 600 !important; }
+
+/* Farm-to-teabag journey timeline */
+.cl-journey { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: none; }
+.cl-journey__step { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 22px 20px; border: 1px solid var(--cl-line); border-radius: 18px; background: var(--cl-paper); box-shadow: 0 6px 18px rgba(31,42,27,.05); }
+.cl-journey__num { font-family: var(--global-heading-font-family); font-size: 15px; font-weight: 700; color: var(--cl-gold); letter-spacing: 1px; }
+.cl-journey__icon { display: inline-flex; width: 44px; height: 44px; align-items: center; justify-content: center; border-radius: 12px; background: #eef2e8; }
+.cl-journey__icon svg { width: 24px; height: 24px; fill: none; stroke: var(--cl-green); stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.cl-journey__step strong { font-size: 16px; color: var(--cl-ink); line-height: 1.3; }
+.cl-journey__text { font-size: 14px; color: var(--cl-muted); line-height: 1.45; }
+.cl-journey__step:last-child { border-color: var(--cl-green); }
+.cl-journey__note { margin: 20px 0 0; font-size: 14px; color: var(--cl-muted); }
+.cl-journey__note a { color: var(--cl-green-dark); font-weight: 600; }
+@media (max-width: 900px) { .cl-journey { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .cl-journey { grid-template-columns: 1fr; gap: 12px; } .cl-journey__step { flex-direction: row; align-items: flex-start; flex-wrap: wrap; } .cl-journey__step strong { flex: 1 1 100%; } }

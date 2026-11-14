@@ -204,6 +204,62 @@ add_action(
 	63
 );
 
+/** Homepage: replace the fake-video "Xem Calen làm trà" grid with the real production journey, and drop the now-duplicate story steps. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_journey_v1' ) ) {
+			return;
+		}
+		update_option( 'calen_journey_v1', gmdate( 'c' ) );
+		calen_home_apply(
+			array(
+				'story steps' => array( '#<ol class="cl-steps">.*?</ol>#s', '<p style="margin:16px 0 0"><a class="cl-link" href="#quy-trinh">Xem quy trình làm trà của Calen →</a></p>' ),
+				'reels'       => array( '#<section class="cl-section"[^>]*>\s*<div class="cl-wrap">\s*<div class="cl-head">\s*<div>\s*<h2 class="cl-h2">Xem Calen làm trà</h2>.*?</section>#s', calen_home_journey() ),
+			)
+		);
+	},
+	64
+);
+
+/** The real farm-to-teabag journey (owner's brief), as a 7-step timeline with icons — no stock/AI photos. */
+function calen_home_journey(): string {
+	$icon = array(
+		'sun'     => '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>',
+		'leaf'    => '<path d="M12 21c0-7 3-11 8-13-1 7-3 11-8 13Zm0 0C12 15 9 11 4 9c0 6 3 10 8 12Z"></path>',
+		'truck'   => '<path d="M3 7h11v9H3zM14 10h4l3 3v3h-7"></path><circle cx="7" cy="17.5" r="1.8"></circle><circle cx="17" cy="17.5" r="1.8"></circle>',
+		'drop'    => '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11Z"></path>',
+		'dry'     => '<path d="M8 3c1 2-1 3 0 5M12 3c1 2-1 3 0 5M16 3c1 2-1 3 0 5"></path><path d="M5 12h14l-1 7a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2l-1-7Z"></path>',
+		'grind'   => '<path d="M5 10h14M6 10a6 6 0 0 0 12 0M12 16v4M9 20h6"></path>',
+		'package' => '<path d="M4 8l8-4 8 4-8 4-8-4Z"></path><path d="M4 8v8l8 4 8-4V8M12 12v8"></path>',
+	);
+	$steps = array(
+		array( 'sun', 'Nông trại đón nắng sớm', 'Mặt trời lên, cả nông trại Calen bừng sáng, bắt đầu một ngày mới.' ),
+		array( 'leaf', 'Thu hái dược liệu', 'Bà con hái thảo mộc tươi ngay tại vườn, chọn đúng độ.' ),
+		array( 'truck', 'Về xưởng trong ngày', 'Dược liệu được chuyển về nhà máy sản xuất ngay trong ngày.' ),
+		array( 'drop', 'Rửa sạch', 'Thảo mộc được rửa kỹ, loại bỏ bụi đất.' ),
+		array( 'dry', 'Sấy khô', 'Sấy ở nhiệt độ phù hợp để giữ màu và hương tự nhiên.' ),
+		array( 'grind', 'Nghiền & phối trộn', 'Nghiền nhỏ và phối theo công thức của từng loại trà.' ),
+		array( 'package', 'Đóng túi lọc & gửi đi', 'Đóng thành túi lọc, vào hộp và gửi đến khách khắp nơi.' ),
+	);
+	$html = '<section class="cl-section" style="padding-top:0" id="quy-trinh"><div class="cl-wrap">'
+		. '<div class="cl-head"><div><h2 class="cl-h2">Hành trình từ nông trại đến tách trà</h2>'
+		. '<p class="cl-sub">Mỗi gói trà Calen đi qua 7 bước, từ vườn thảo mộc đến tay bạn.</p></div>'
+		. '<a class="cl-link" href="https://www.facebook.com/Calenmask/reels/" target="_blank" rel="noopener">Xem video trên Facebook Reels →</a></div>'
+		. '<ol class="cl-journey">';
+	foreach ( $steps as $i => list( $key, $title, $text ) ) {
+		$html .= sprintf(
+			'<li class="cl-journey__step"><span class="cl-journey__num">%02d</span><span class="cl-journey__icon"><svg viewBox="0 0 24 24" aria-hidden="true">%s</svg></span><strong>%s</strong><span class="cl-journey__text">%s</span></li>',
+			$i + 1,
+			$icon[ $key ],
+			esc_html( $title ),
+			esc_html( $text )
+		);
+	}
+	$html .= '</ol><p class="cl-journey__note">Video quy trình đầy đủ đang được cập nhật. Trong lúc chờ, bạn xem các clip thật tại <a href="https://www.facebook.com/Calenmask/reels/" target="_blank" rel="noopener">Facebook Reels của Calen</a>.</p>';
+	return $html . '</div></section>';
+}
+
 function calen_home_hero_media(): string {
 	$dir   = plugins_url( 'assets/', __FILE__ );
 	$boxes = array(

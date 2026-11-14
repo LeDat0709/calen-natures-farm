@@ -257,3 +257,7 @@ h1, h2, h3, .site-title { font-family: var(--global-heading-font-family); }
 /* Footer legal row + BCT badge as a link */
 a.cl-footer__bct { text-decoration: none; }
 .cl-footer__legal { display: flex; flex-wrap: wrap; gap: 4px 20px; padding-bottom: 20px; font-size: 13px; color: #b7c1af; }
+
+/* Real Shopee figures in the reviews section */
+.cl-stat { display: block; margin-bottom: 8px; font-family: var(--global-heading-font-family); font-size: 40px; line-height: 1.1; font-weight: 600; color: var(--cl-green-dark); }
+.cl-review figcaption { color: var(--cl-text); }

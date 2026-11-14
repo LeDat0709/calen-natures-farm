@@ -24,6 +24,7 @@ const CALEN_SETUP_FLAG = 'calen_setup_done_v7';
 
 if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (array) get_option( 'active_plugins' ), true ) ) {
 	require_once __DIR__ . '/calen-shop.php';
+	require_once __DIR__ . '/calen-import.php';
 }
 
 // Automatically choose free shipping and hide flat rate when cart total >= 300.000đ
@@ -46,7 +47,7 @@ add_action(
 	'wp_enqueue_scripts',
 	function () {
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.6.1' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.7.0' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );
@@ -333,11 +334,12 @@ add_action(
 					<h4>Sản phẩm</h4>
 					<ul class="cl-footer__links">
 						<li><a href="/shop/">Tất cả sản phẩm</a></li>
-						<li><a href="/product-category/ngu-ngon/">Trà ngủ ngon</a></li>
-						<li><a href="/product-category/thanh-nhiet/">Trà thanh nhiệt</a></li>
-						<li><a href="/product-category/tieu-hoa/">Trà tiêu hoá</a></li>
-						<li><a href="/product-category/dep-da/">Trà đẹp da</a></li>
-						<li><a href="/product-category/qua-bieu/">Hộp quà biếu</a></li>
+						<li><a href="/product-category/phu-nu/">Dành cho phụ nữ</a></li>
+						<li><a href="/product-category/can-nang-detox/">Cân nặng & detox</a></li>
+						<li><a href="/product-category/tieu-hoa/">Dạ dày & tiêu hoá</a></li>
+						<li><a href="/product-category/xuong-khop/">Xương khớp</a></li>
+						<li><a href="/product-category/gan-than/">Gan & thận</a></li>
+						<li><a href="https://shopee.vn/calennaturefarm" target="_blank" rel="noopener">Gian hàng Shopee Mall</a></li>
 					</ul>
 				</div>
 				<div class="cl-footer__col">

@@ -313,12 +313,12 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .woocommerce-table--order-details .product-name a { font-weight: 700 !important; color: var(--cl-ink) !important; }
 @media (max-width: 600px) { .site-branding .site-title { font-size: 21px !important; line-height: 1.2 !important; white-space: nowrap; } }
 
-/* Hero: three real Calen boxes, middle one raised */
-.cl-hero__boxes { position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: center; padding: 28px 0 40px; }
-.cl-hero__boxes .cl-box { width: 100%; height: auto; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 18px; box-shadow: 0 18px 40px rgba(31, 42, 27, 0.18); }
-.cl-hero__boxes .cl-box:nth-child(2) { transform: translateY(-26px) scale(1.06); z-index: 1; }
-.cl-hero__boxes .cl-float { z-index: 2; }
-@media (max-width: 600px) { .cl-hero__boxes { gap: 8px; padding: 18px 0 32px; } .cl-hero__boxes .cl-box { border-radius: 12px; } .cl-hero__boxes .cl-box:nth-child(2) { transform: translateY(-14px) scale(1.06); } }
+/* Hero: four real Calen boxes, background removed, as a product lineup on the cream */
+.cl-hero__boxes { position: relative; display: flex; align-items: center; justify-content: center; gap: 4px; padding: 20px 0 46px; }
+.cl-hero__boxes .cl-box { flex: 1 1 0; min-width: 0; max-width: 25%; width: auto; height: auto; aspect-ratio: auto; object-fit: contain; border-radius: 0; background: none; box-shadow: none; filter: drop-shadow(0 12px 20px rgba(31, 42, 27, 0.18)); }
+.cl-hero__boxes .cl-box:nth-child(2), .cl-hero__boxes .cl-box:nth-child(3) { transform: translateY(-18px); }
+.cl-hero__boxes .cl-float { position: absolute; left: 8px; bottom: 2px; z-index: 3; }
+@media (max-width: 600px) { .cl-hero__boxes { gap: 3px; padding: 14px 0 34px; } .cl-hero__boxes .cl-box:nth-child(2), .cl-hero__boxes .cl-box:nth-child(3) { transform: translateY(-10px); } .cl-hero__boxes .cl-float { left: 4px; } }
 
 /* Shop/category filter pills */
 .cl-shopcats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 24px; }

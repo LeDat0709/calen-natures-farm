@@ -204,6 +204,32 @@ add_action(
 	63
 );
 
+/** Hero v2: swap to the clean Calen-branded boxes (Teatox, UG-UXO, Tròn Khe) the owner supplied. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_hero_v2' ) ) {
+			return;
+		}
+		update_option( 'calen_hero_v2', gmdate( 'c' ) );
+		calen_home_apply( array( 'hero media v2' => array( '#<div class="cl-hero__media cl-hero__boxes">.*?<div class="cl-float">.*?</div>\s*</div>#s', calen_home_hero_media() ) ) );
+	},
+	65
+);
+
+/** Hero v3: background removed, four Calen boxes (Teatox, UG-UXO, Tròn Khe, Tophi) as a product lineup. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_hero_v3' ) ) {
+			return;
+		}
+		update_option( 'calen_hero_v3', gmdate( 'c' ) );
+		calen_home_apply( array( 'hero media v3' => array( '#<div class="cl-hero__media cl-hero__boxes">.*?<div class="cl-float">.*?</div>\s*</div>#s', calen_home_hero_media() ) ) );
+	},
+	66
+);
+
 /** Homepage: replace the fake-video "Xem Calen làm trà" grid with the real production journey, and drop the now-duplicate story steps. */
 add_action(
 	'init',
@@ -263,13 +289,14 @@ function calen_home_journey(): string {
 function calen_home_hero_media(): string {
 	$dir   = plugins_url( 'assets/', __FILE__ );
 	$boxes = array(
-		'hero-ca-gai-leo.jpg' => 'Hộp Trà Cà Gai Leo Calen',
-		'hero-la-oi.jpg'      => 'Hộp Trà Lá Ổi Calen',
-		'hero-la-nam.jpg'     => 'Hộp Trà Lá Nam 10 Vị Calen',
+		'box-teatox.webp'  => 'Hộp Trà Teatox Calen Nature Farm',
+		'box-uguxo.webp'   => 'Hộp Trà UG-UXO Calen Nature Farm',
+		'box-tronkhe.webp' => 'Hộp Trà Tròn Khe Calen Nature Farm',
+		'box-tophi.webp'   => 'Hộp Trà Tophi Calen Nature Farm',
 	);
 	$html = '<div class="cl-hero__media cl-hero__boxes">';
 	foreach ( $boxes as $file => $alt ) {
-		$html .= '<img class="cl-box" src="' . esc_url( $dir . $file ) . '" alt="' . esc_attr( $alt ) . '" width="400" height="600" fetchpriority="high">';
+		$html .= '<img class="cl-box" src="' . esc_url( $dir . $file ) . '" alt="' . esc_attr( $alt ) . '" width="440" height="845" fetchpriority="high">';
 	}
 	return $html . '<div class="cl-float"><strong>Shopee Mall chính hãng</strong>4.9★ · 22,4k đánh giá · 7 năm</div></div>';
 }

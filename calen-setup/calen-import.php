@@ -178,13 +178,8 @@ function calen_import_menu() {
 
 /** Replaces sample-era homepage blocks with real categories and real Shopee figures. Each block is changed only if found exactly once. */
 function calen_import_homepage() {
-	$page = get_page_by_path( 'trang-chu' );
-	if ( ! $page ) {
-		error_log( 'Calen storefront: page trang-chu not found.' );
-		return;
-	}
-	$content = $page->post_content;
-	$edits   = array(
+	calen_home_apply(
+		array(
 		'hero proof' => array( '#<div class="cl-hero__proof">.*?</div>#s', calen_home_proof() ),
 		'needs'      => array( '#<div class="cl-needs">.*?</div>#s', calen_home_needs() ),
 		'reviews'    => array( '#<section class="cl-section"[^>]*>\s*<div class="cl-wrap">\s*<div class="cl-head">\s*<div>\s*<h2 class="cl-h2">Khách hàng nói gì về Calen</h2>.*?</section>#s', calen_home_reviews() ),
@@ -192,7 +187,45 @@ function calen_import_homepage() {
 		'combo text' => array( '#Mua combo tiết kiệm thêm 7.{1,3}12%#u', 'Mua từ 2 hộp là được miễn phí giao hàng' ),
 		'freeship'   => array( '#<strong>Freeship từ 300\.000[^<]*</strong><span>[^<]*</span>#u', '<strong>Miễn phí giao hàng</strong><span>Cho mọi đơn, giao toàn quốc</span>' ),
 		'gift link'  => array( '#<a([^>]*)href="/product-category/qua-bieu/"([^>]*)>Xem hộp quà</a>#', '<a$1href="https://zalo.me/' . CALEN_PHONE . '" target="_blank" rel="noopener"$2>Nhắn Zalo đặt hộp quà</a>' ),
+		)
 	);
+}
+
+/** Homepage hero: three real Calen boxes (cropped from the Shopee photos, without the claim text) instead of the AI teapot photo. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_hero_v1' ) ) {
+			return;
+		}
+		update_option( 'calen_hero_v1', gmdate( 'c' ) );
+		calen_home_apply( array( 'hero media' => array( '#<div class="cl-hero__media">.*?<div class="cl-float">.*?</div>\s*</div>#s', calen_home_hero_media() ) ) );
+	},
+	63
+);
+
+function calen_home_hero_media(): string {
+	$dir   = plugins_url( 'assets/', __FILE__ );
+	$boxes = array(
+		'hero-ca-gai-leo.jpg' => 'Hộp Trà Cà Gai Leo Calen',
+		'hero-la-oi.jpg'      => 'Hộp Trà Lá Ổi Calen',
+		'hero-la-nam.jpg'     => 'Hộp Trà Lá Nam 10 Vị Calen',
+	);
+	$html = '<div class="cl-hero__media cl-hero__boxes">';
+	foreach ( $boxes as $file => $alt ) {
+		$html .= '<img class="cl-box" src="' . esc_url( $dir . $file ) . '" alt="' . esc_attr( $alt ) . '" width="400" height="600" fetchpriority="high">';
+	}
+	return $html . '<div class="cl-float"><strong>Shopee Mall chính hãng</strong>4.9★ · 22,4k đánh giá · 7 năm</div></div>';
+}
+
+/** Replaces homepage blocks; each one only when its pattern matches exactly once, so an unexpected layout is left alone. */
+function calen_home_apply( array $edits ) {
+	$page = get_page_by_path( 'trang-chu' );
+	if ( ! $page ) {
+		error_log( 'Calen storefront: page trang-chu not found.' );
+		return;
+	}
+	$content = $page->post_content;
 	foreach ( $edits as $label => list( $pattern, $replacement ) ) {
 		$updated = preg_replace( $pattern, $replacement, $content, -1, $count );
 		if ( 1 !== $count ) {

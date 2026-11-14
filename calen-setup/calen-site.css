@@ -7,11 +7,13 @@
 	--cl-ink: #1f2a1b;
 	--cl-text: #3d4636;
 	--cl-muted: #5a6352;
-	--cl-cream: #f6f2e7;
-	--cl-paper: #fffdf8;
-	--cl-line: #e7e3d4;
+	--cl-cream: #f8f6ef;
+	--cl-paper: #ffffff;
+	--cl-line: #e9e5da;
 	--cl-gold: #e5c78f;
 }
+/* Page background comes from the Kadence palette (#f6f2e7); override to the lighter, cleaner cream. */
+body, body.wp-singular .content-bg, body .entry-content-wrap { background-color: var(--cl-cream); }
 body { font-family: var(--global-body-font-family); }
 h1, h2, h3, .site-title { font-family: var(--global-heading-font-family); }
 
@@ -62,7 +64,8 @@ h1, h2, h3, .site-title { font-family: var(--global-heading-font-family); }
 /* Product grid (WooCommerce loop inside .cl-products) */
 .cl-products ul.products { margin: 0 !important; display: grid !important; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 24px; }
 .cl-products ul.products::before, .cl-products ul.products::after { display: none !important; }
-.cl-products ul.products li.product { width: auto !important; margin: 0 !important; border: 1px solid var(--cl-line); border-radius: 20px; overflow: hidden; background: var(--cl-paper); transition: border-color .15s; }
+.cl-products ul.products li.product { width: auto !important; margin: 0 !important; border: 1px solid var(--cl-line); border-radius: 20px; overflow: hidden; background: var(--cl-paper); box-shadow: 0 6px 18px rgba(31, 42, 27, .06); transition: border-color .15s, box-shadow .15s, transform .15s; }
+.cl-products ul.products li.product:hover { box-shadow: 0 12px 28px rgba(31, 42, 27, .10); transform: translateY(-2px); }
 .cl-products ul.products li.product:hover { border-color: #b9b39f; box-shadow: none; }
 .cl-products ul.products li.product img { border-radius: 0; }
 .cl-products ul.products li.product .product-details, .cl-products ul.products li.product .woocommerce-loop-product__title, .cl-products ul.products li.product .price { padding-left: 18px; padding-right: 18px; }
@@ -325,3 +328,8 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .cl-shopcats__pill.is-on { background: var(--cl-green); border-color: var(--cl-green); color: #fff; }
 .cl-shopcats__pill.is-on span { background: rgba(255,255,255,.22); color: #fff; }
 @media (max-width: 600px) { .cl-shopcats { gap: 8px; margin-bottom: 18px; } .cl-shopcats__pill { padding: 8px 13px; font-size: 14px; } }
+
+/* Shop/category archive cards: pure white + subtle lift so they pop on the lighter cream */
+.woocommerce ul.products li.product.content-bg,
+.woocommerce ul.products li.product { background-color: #fff !important; border-radius: 18px; box-shadow: 0 6px 18px rgba(31, 42, 27, .06); transition: box-shadow .15s, transform .15s; }
+.woocommerce ul.products li.product:hover { box-shadow: 0 12px 28px rgba(31, 42, 27, .10); transform: translateY(-2px); }

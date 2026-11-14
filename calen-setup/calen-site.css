@@ -219,3 +219,41 @@ h1, h2, h3, .site-title { font-family: var(--global-heading-font-family); }
 	background: #7a8270;
 	opacity: 0.9;
 }
+
+/* Product quick facts: ingredient bar + brewing chips */
+.cl-quick { margin: 14px 0 18px; padding: 14px 16px; border: 1px solid var(--cl-line); border-radius: 16px; background: var(--cl-paper); }
+.cl-quick__label { margin: 0 0 8px; font-size: 13px; font-weight: 600; letter-spacing: .3px; text-transform: uppercase; color: var(--cl-muted); }
+.cl-quick__bar { display: flex; height: 10px; border-radius: 999px; overflow: hidden; background: var(--cl-line); }
+.cl-quick__bar span { display: block; height: 100%; }
+.cl-quick__legend { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 14px; color: var(--cl-text); }
+.cl-quick__legend i { display: inline-block; width: 10px; height: 10px; margin-right: 6px; border-radius: 3px; vertical-align: -1px; }
+.cl-quick__chips { list-style: none; margin: 12px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 8px; }
+.cl-quick__legend + .cl-quick__chips { padding-top: 12px; border-top: 1px dashed var(--cl-line); }
+.cl-quick__chips li { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; border-radius: 12px; background: var(--cl-cream); }
+.cl-quick__chips span { font-size: 12px; color: var(--cl-muted); }
+.cl-quick__chips strong { font-size: 15px; color: var(--cl-ink); }
+.cl-quick > .cl-quick__chips:first-child { margin-top: 0; }
+
+/* Out of stock: Zalo instead of a dead button */
+.cl-oos { margin: 8px 0 16px; }
+.cl-oos__btn { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 0 24px; border-radius: 999px; background: #0068ff; color: #fff !important; font-weight: 600; text-decoration: none; }
+.cl-oos p { margin: 8px 0 0; font-size: 14px; color: var(--cl-muted); }
+
+/* Mobile sticky buy bar */
+.cl-stickybuy { display: none; }
+@media (max-width: 768px) {
+	.cl-stickybuy { position: fixed; left: 0; right: 0; bottom: 0; z-index: 9998; display: flex; align-items: center; gap: 12px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: var(--cl-paper); border-top: 1px solid var(--cl-line); box-shadow: 0 -6px 20px rgba(31, 42, 27, .08); transform: translateY(110%); transition: transform .2s ease; }
+	.cl-stickybuy.is-on { transform: none; }
+	.cl-stickybuy__info { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+	.cl-stickybuy__name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: 13px; color: var(--cl-muted); }
+	.cl-stickybuy__price { font-weight: 600; color: var(--cl-ink); }
+	.cl-stickybuy__price del { font-weight: 400; font-size: 13px; color: var(--cl-muted); margin-right: 4px; }
+	.cl-stickybuy__btn { flex: none; min-height: 46px; padding: 0 20px; border: 0; border-radius: 999px; background: var(--cl-green); color: #fff; font: inherit; font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; cursor: pointer; }
+	a.cl-stickybuy__btn { background: #0068ff; color: #fff; }
+	body.cl-stickybuy-on .calen-fab { bottom: 84px; }
+}
+@media (prefers-reduced-motion: reduce) { .cl-stickybuy { transition: none; } }
+
+/* Footer legal row + BCT badge as a link */
+a.cl-footer__bct { text-decoration: none; }
+.cl-footer__legal { display: flex; flex-wrap: wrap; gap: 4px 20px; padding-bottom: 20px; font-size: 13px; color: #b7c1af; }

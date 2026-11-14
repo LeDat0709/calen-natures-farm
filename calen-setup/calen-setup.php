@@ -2,10 +2,20 @@
 /**
  * Plugin Name: Calen Setup
  * Description: Calen Nature's Farm store setup (Vietnamese, VND, COD, shipping, Kadence colors) and floating Zalo/call buttons. Keep active for the buttons.
- * Version: 1.3.0
+ * Version: 1.4.0
  */
 
 defined( 'ABSPATH' ) || exit;
+
+// Legal details printed in the footer (required for Vietnamese e-commerce sites). Empty fields are not shown.
+const CALEN_LEGAL = array(
+	'owner'   => '', // e.g. "Hộ kinh doanh Calen Nature's Farm" or the company name
+	'license' => '', // e.g. "GCN ĐKKD số 0123456789 do UBND huyện ... cấp ngày 01/01/2020"
+	'address' => '', // registered business address
+	'email'   => '',
+);
+// Link from online.gov.vn after notifying Bộ Công Thương. The badge stays hidden until this is set.
+const CALEN_BCT_URL = '';
 
 const CALEN_FLAT_SHIPPING_VND = '30000'; // ponytail: placeholder fee, owner sets real GHN/GHTK rates later
 const CALEN_FREE_SHIPPING_MIN_VND = '300000'; // Freeship for orders from 300.000đ
@@ -36,7 +46,7 @@ add_action(
 	'wp_enqueue_scripts',
 	function () {
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.5.0' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.6.1' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );
@@ -312,10 +322,12 @@ add_action(
 				<div class="cl-footer__col cl-footer__col--brand">
 					<span class="cl-footer__logo">CALEN</span>
 					<p class="cl-footer__tagline">Trà thảo mộc sạch từ nông trại.<br>Thương hiệu uy tín 7 năm.</p>
-					<div class="cl-footer__bct">
+					<?php if ( CALEN_BCT_URL ) : ?>
+					<a class="cl-footer__bct" href="<?php echo esc_url( CALEN_BCT_URL ); ?>" target="_blank" rel="noopener">
 						<span>ĐÃ THÔNG BÁO</span>
 						<strong>BỘ CÔNG THƯƠNG</strong>
-					</div>
+					</a>
+					<?php endif; ?>
 				</div>
 				<div class="cl-footer__col">
 					<h4>Sản phẩm</h4>
@@ -352,6 +364,16 @@ add_action(
 					</div>
 				</div>
 			</div>
+			<?php
+			$legal = array_filter( CALEN_LEGAL );
+			if ( $legal ) :
+				?>
+			<div class="cl-wrap cl-footer__legal">
+				<?php foreach ( $legal as $key => $value ) : ?>
+					<span><?php echo 'email' === $key ? 'Email: ' : ''; ?><?php echo esc_html( $value ); ?></span>
+				<?php endforeach; ?>
+			</div>
+			<?php endif; ?>
 			<div class="cl-footer__bot">
 				<div class="cl-wrap cl-footer__bot-wrap">
 					<span>© 2026 Calen Nature's Farm · Bản quyền thuộc về Calen</span>

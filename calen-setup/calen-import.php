@@ -230,6 +230,32 @@ add_action(
 	66
 );
 
+/**
+ * Brand story from the owner (14/11/2026) in the "Câu chuyện" section, and brand age 7 -> 10 years where the page
+ * speaks about the brand. "7 năm" stays where it is about Shopee tenure (badge, stats), which is verifiable.
+ * "5 sao" in the owner's text is written as the real Shopee figure, 4.9/5, to match the rest of the site.
+ */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_story_v1' ) ) {
+			return;
+		}
+		update_option( 'calen_story_v1', gmdate( 'c' ) );
+		$story = 'Calen Nature\'s Farm là thương hiệu trà thảo mộc uy tín, được hàng trăm nghìn người tin dùng trong 10 năm qua, '
+			. 'với điểm đánh giá 4.9/5 và tỷ lệ khách hàng quay lại rất cao. Mong muốn của Calen là đưa tới tay từng người những sản phẩm '
+			. 'trà thảo mộc thiên nhiên thuần tuý, không chất bảo quản, an toàn cho sức khoẻ. Hãy cùng mua sắm với Calen nhé!';
+		calen_home_apply(
+			array(
+				'story heading' => array( '#<h2 class="cl-h2">Bảy năm làm trà<br\s*/?>theo cách chậm rãi</h2>#u', '<h2 class="cl-h2">Mười năm làm trà<br>theo cách chậm rãi</h2>' ),
+				'story body'    => array( '#<p style="margin:0">Hơn 7 năm qua.*?</p>#su', '<p style="margin:0">' . esc_html( $story ) . '</p>' ),
+				'hero pill'     => array( '#<span class="cl-pill">Thương hiệu trà thảo mộc · 7 năm</span>#u', '<span class="cl-pill">Thương hiệu trà thảo mộc · 10 năm</span>' ),
+			)
+		);
+	},
+	67
+);
+
 /** Homepage: replace the fake-video "Xem Calen làm trà" grid with the real production journey, and drop the now-duplicate story steps. */
 add_action(
 	'init',

@@ -398,7 +398,7 @@ add_action(
 			<div class="cl-wrap cl-footer__grid">
 				<div class="cl-footer__col cl-footer__col--brand">
 					<span class="cl-footer__logo">CALEN</span>
-					<p class="cl-footer__tagline">Trà thảo mộc sạch từ nông trại.<br>Thương hiệu uy tín 7 năm.</p>
+					<p class="cl-footer__tagline">Trà thảo mộc sạch từ nông trại.<br>Thương hiệu uy tín 10 năm.</p>
 					<?php if ( CALEN_BCT_URL ) : ?>
 					<a class="cl-footer__bct" href="<?php echo esc_url( CALEN_BCT_URL ); ?>" target="_blank" rel="noopener">
 						<span>ĐÃ THÔNG BÁO</span>

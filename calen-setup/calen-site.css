@@ -356,3 +356,11 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .cl-journey__note a { color: var(--cl-green-dark); font-weight: 600; }
 @media (max-width: 900px) { .cl-journey { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 480px) { .cl-journey { grid-template-columns: 1fr; gap: 12px; } .cl-journey__step { flex-direction: row; align-items: flex-start; flex-wrap: wrap; } .cl-journey__step strong { flex: 1 1 100%; } }
+
+/* Rating + sold as bold trust badges on product cards */
+.cl-social { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 9px; }
+.cl-social__rating, .cl-social__sold { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 999px; font-size: 13px; font-weight: 700; line-height: 1; }
+.cl-social__rating { background: #fdf3e0; color: var(--cl-ink); }
+.cl-social__rating b { color: #f5a623; font-size: 14px; font-weight: 700; }
+.cl-social__sold { background: #eaf1e4; color: var(--cl-green-dark); }
+.cl-social__sold::before { content: ""; width: 14px; height: 14px; margin-right: 2px; background: no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232f4325' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 7h14l-1.2 11.2a2 2 0 0 1-2 1.8H8.2a2 2 0 0 1-2-1.8L5 7Z'/%3E%3Cpath d='M9 7a3 3 0 0 1 6 0'/%3E%3C/svg%3E"); }

@@ -67,6 +67,14 @@ function calen_shopee_proof( WC_Product $product ): string {
 	return implode( ' · ', $parts );
 }
 
+/** Rating and sold separately, so each can be styled as its own trust badge. @return array{rating:string,sold:string} */
+function calen_shopee_proof_parts( WC_Product $product ): array {
+	return array(
+		'rating' => trim( (string) $product->get_meta( 'calen_shopee_rating' ) ),
+		'sold'   => trim( (string) $product->get_meta( 'calen_shopee_sold' ) ),
+	);
+}
+
 /** Freeship tag on each product photo in lists. */
 add_action(
 	'woocommerce_before_shop_loop_item_title',
@@ -81,10 +89,21 @@ add_action(
 	'woocommerce_after_shop_loop_item_title',
 	function () {
 		global $product;
-		$proof = $product ? calen_shopee_proof( $product ) : '';
-		if ( $proof ) {
-			echo '<span class="cl-sold">' . esc_html( $proof ) . '</span>';
+		if ( ! $product ) {
+			return;
 		}
+		$p = calen_shopee_proof_parts( $product );
+		if ( ! $p['rating'] && ! $p['sold'] ) {
+			return;
+		}
+		echo '<div class="cl-social">';
+		if ( $p['rating'] ) {
+			echo '<span class="cl-social__rating"><b>★</b> ' . esc_html( $p['rating'] ) . '</span>';
+		}
+		if ( $p['sold'] ) {
+			echo '<span class="cl-social__sold">Đã bán ' . esc_html( $p['sold'] ) . '</span>';
+		}
+		echo '</div>';
 	},
 	11
 );

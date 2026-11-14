@@ -30,7 +30,7 @@ add_action(
 	'wp_enqueue_scripts',
 	function () {
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.9.0' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.9.3' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );
@@ -80,6 +80,7 @@ add_action(
 	}
 );
 const CALEN_PHONE      = '0988836910';
+const CALEN_PHONE_SHOW = '09888.36910'; // how the hotline is written on the site
 const CALEN_PALETTE    = array( '#3f5d32', '#2f4325', '#1f2a1b', '#2f3a2a', '#5a6352', '#8a917f', '#e7e3d4', '#f6f2e7', '#fffdf8' );
 
 // Floating Zalo + call buttons on every page (mobile-first, most traffic comes from Facebook).

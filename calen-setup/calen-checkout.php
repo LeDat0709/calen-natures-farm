@@ -63,6 +63,32 @@ add_action(
 	}
 );
 
+/** Hotline under the buy buttons, for customers who would rather order by phone. */
+add_action(
+	'woocommerce_after_add_to_cart_button',
+	function () {
+		printf(
+			'<p class="cl-callorder">Hoặc gọi đặt hàng: <a href="tel:%s">%s</a></p>',
+			esc_attr( CALEN_PHONE ),
+			esc_html( CALEN_PHONE_SHOW )
+		);
+	},
+	20
+);
+
+/** Help line at the top of checkout; the floating call/Zalo buttons are hidden there so they do not cover the form. */
+add_action(
+	'woocommerce_before_checkout_form',
+	function () {
+		printf(
+			'<div class="cl-help">Cần hỗ trợ đặt hàng? <a href="tel:%1$s">Gọi %2$s</a><span aria-hidden="true">·</span><a href="https://zalo.me/%1$s" target="_blank" rel="noopener">Nhắn Zalo</a></div>',
+			esc_attr( CALEN_PHONE ),
+			esc_html( CALEN_PHONE_SHOW )
+		);
+	},
+	5
+);
+
 add_filter(
 	'woocommerce_add_to_cart_redirect',
 	function ( $url ) {

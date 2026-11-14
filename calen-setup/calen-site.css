@@ -260,3 +260,12 @@ a.cl-footer__bct { text-decoration: none; }
 .woocommerce-checkout .woocommerce-billing-fields h3 { font-size: 20px; }
 .woocommerce-checkout .form-row input.input-text, .woocommerce-checkout .form-row select, .woocommerce-checkout .select2-selection { min-height: 48px; font-size: 16px; }
 .woocommerce-checkout #place_order { width: 100%; min-height: 54px; font-size: 18px; border-radius: 999px; }
+
+/* Hotline while buying */
+form.cart { flex-wrap: wrap; }
+.cl-buynow, .cl-callorder { flex: 0 0 100%; float: none !important; clear: both; } /* WooCommerce floats the cart buttons */
+.cl-callorder { width: 100%; margin: 10px 0 0; text-align: center; font-size: 15px; color: var(--cl-muted); }
+.cl-callorder a { font-weight: 600; color: var(--cl-green-dark); }
+.cl-help { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 20px; padding: 12px 16px; border-radius: 14px; background: var(--cl-cream); font-size: 15px; }
+.cl-help a { font-weight: 600; color: var(--cl-green-dark); }
+.cl-help span { color: var(--cl-muted); }

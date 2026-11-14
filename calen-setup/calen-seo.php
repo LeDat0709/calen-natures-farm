@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 require_once __DIR__ . '/calen-seo-text.php';
 
 const CALEN_SITE_NAME     = "Calen Nature's Farm";
+const CALEN_GOOGLE_VERIFY = ''; // paste the Google Search Console "HTML tag" content value here to verify the site
 const CALEN_FACEBOOK_URL  = 'https://www.facebook.com/Calenmask';
 const CALEN_SEO_PROMISE   = 'Miễn phí giao hàng toàn quốc, nhận hàng rồi trả tiền (COD).';
 const CALEN_HOME_DESC     = "Trà thảo mộc túi lọc Calen Nature's Farm: 7 năm trên Shopee Mall, 4.9★ từ 22,4k đánh giá. " . CALEN_SEO_PROMISE;
@@ -74,6 +75,9 @@ add_action(
 		if ( ! $c ) {
 			return;
 		}
+		if ( CALEN_GOOGLE_VERIFY && is_front_page() ) {
+			echo '<meta name="google-site-verification" content="' . esc_attr( CALEN_GOOGLE_VERIFY ) . '">' . "\n";
+		}
 		$desc = calen_seo_trim( $c['desc'] );
 		echo '<meta name="description" content="' . esc_attr( $desc ) . '">' . "\n";
 		if ( ! is_singular() ) {
@@ -97,21 +101,74 @@ add_action(
 		}
 		echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
 		if ( is_front_page() ) {
-			$store = array(
-				'@context'   => 'https://schema.org',
-				'@type'      => 'OnlineStore',
-				'name'       => CALEN_SITE_NAME,
-				'url'        => home_url( '/' ),
-				'telephone'  => '+84' . ltrim( CALEN_PHONE, '0' ),
-				'image'      => $c['image'],
-				'areaServed' => 'VN',
-				'sameAs'     => array( CALEN_FACEBOOK_URL, CALEN_SHOPEE_SHOP_URL ),
+			$graph = array(
+				array(
+					'@type'           => 'OnlineStore',
+					'@id'             => home_url( '/#store' ),
+					'name'            => CALEN_SITE_NAME,
+					'url'             => home_url( '/' ),
+					'telephone'       => '+84' . ltrim( CALEN_PHONE, '0' ),
+					'image'           => $c['image'],
+					'areaServed'      => 'VN',
+					'sameAs'          => array( CALEN_FACEBOOK_URL, CALEN_SHOPEE_SHOP_URL ),
+					'aggregateRating' => array( '@type' => 'AggregateRating', 'ratingValue' => '4.9', 'reviewCount' => '22400', 'bestRating' => '5' ),
+				),
+				array(
+					'@type'           => 'WebSite',
+					'@id'             => home_url( '/#website' ),
+					'url'             => home_url( '/' ),
+					'name'            => CALEN_SITE_NAME,
+					'inLanguage'      => 'vi',
+					'potentialAction' => array(
+						'@type'       => 'SearchAction',
+						'target'      => array( '@type' => 'EntryPoint', 'urlTemplate' => home_url( '/?s={search_term_string}&post_type=product' ) ),
+						'query-input' => 'required name=search_term_string',
+					),
+				),
 			);
-			echo '<script type="application/ld+json">' . wp_json_encode( $store, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES ) . '</script>' . "\n";
+			calen_seo_jsonld( $graph );
+		} elseif ( $crumbs = calen_seo_breadcrumbs() ) {
+			calen_seo_jsonld( array( $crumbs ) );
 		}
 	},
 	1
 );
+
+function calen_seo_jsonld( array $graph ) {
+	echo '<script type="application/ld+json">' . wp_json_encode(
+		array( '@context' => 'https://schema.org', '@graph' => $graph ),
+		JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
+	) . '</script>' . "\n";
+}
+
+/** BreadcrumbList so Google shows Trang chủ › Cửa hàng › Nhóm › Sản phẩm under the result. Null off product/category pages. */
+function calen_seo_breadcrumbs(): ?array {
+	$trail = array( array( 'Trang chủ', home_url( '/' ) ) );
+	if ( is_product() ) {
+		$product = wc_get_product( get_queried_object_id() );
+		if ( ! $product ) {
+			return null;
+		}
+		$trail[] = array( 'Cửa hàng', wc_get_page_permalink( 'shop' ) );
+		$terms   = get_the_terms( $product->get_id(), 'product_cat' );
+		if ( $terms && ! is_wp_error( $terms ) ) {
+			$term    = $terms[0];
+			$trail[] = array( $term->name, get_term_link( $term ) );
+		}
+		$trail[] = array( $product->get_name(), get_permalink( $product->get_id() ) );
+	} elseif ( is_product_category() ) {
+		$term    = get_queried_object();
+		$trail[] = array( 'Cửa hàng', wc_get_page_permalink( 'shop' ) );
+		$trail[] = array( $term->name, get_term_link( $term ) );
+	} else {
+		return null;
+	}
+	$items = array();
+	foreach ( $trail as $i => list( $name, $url ) ) {
+		$items[] = array( '@type' => 'ListItem', 'position' => $i + 1, 'name' => html_entity_decode( $name, ENT_QUOTES, 'UTF-8' ), 'item' => $url );
+	}
+	return array( '@type' => 'BreadcrumbList', 'itemListElement' => $items );
+}
 
 /** Product titles carry the pack size, which shoppers search for ("hộp 30 túi lọc"). */
 add_filter(

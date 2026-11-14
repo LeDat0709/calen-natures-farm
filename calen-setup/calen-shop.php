@@ -1,6 +1,6 @@
 <?php
 /**
- * Shop features: combo pricing (1 / 3 / 6 packs) and a richer single product page.
+ * Shop features: a richer single product page.
  * Per-product text comes from custom fields the owner can edit on the product:
  *   calen_benefit      one-line benefit under the title
  *   calen_taste        taste note, e.g. "Vị thanh, hương hoa dịu"
@@ -15,30 +15,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
-require_once __DIR__ . '/calen-tiers.php';
 require_once __DIR__ . '/calen-composition.php';
 
 const CALEN_COMPOSITION_COLORS = array( '#3f5d32', '#c8963e', '#7a8f5c', '#b5654a', '#5a6352', '#d9c38a' );
-
-const CALEN_COMBO_PACKS = array( 1, 3, 6 );
-
-/** Apply combo discounts to cart line prices (classic and block cart). */
-add_action(
-	'woocommerce_before_calculate_totals',
-	function ( $cart ) {
-		if ( is_admin() && ! wp_doing_ajax() ) {
-			return;
-		}
-		foreach ( $cart->get_cart() as $item ) {
-			$fresh = wc_get_product( $item['data']->get_id() );
-			if ( ! $fresh ) {
-				continue;
-			}
-			$item['data']->set_price( calen_tier_unit_price( (float) $fresh->get_price(), (int) $item['quantity'] ) );
-		}
-	},
-	20
-);
 
 function calen_meta( string $key ): string {
 	global $product;
@@ -155,51 +134,6 @@ add_action(
 			var buy = bar.querySelector('[data-buy]');
 			if (buy) buy.addEventListener('click', function () { target.click(); });
 		})();
-		</script>
-		<?php
-	}
-);
-
-/** Combo picker (1 / 3 / 6 packs) above the add-to-cart button. */
-add_action(
-	'woocommerce_before_add_to_cart_quantity',
-	function () {
-		global $product;
-		if ( ! $product || ! $product->is_type( 'simple' ) || $product->is_sold_individually() ) {
-			return;
-		}
-		$base = (float) $product->get_price();
-		echo '<fieldset class="cl-combo"><legend>Chọn gói</legend><div class="cl-combo__opts">';
-		foreach ( CALEN_COMBO_PACKS as $i => $qty ) {
-			$label  = 1 === $qty ? '1 gói' : 'Combo ' . $qty . ' gói';
-			$saving = calen_tier_saving( $base, $qty );
-			$note   = $saving > 0
-				? 'Tiết kiệm ' . wp_strip_all_tags( wc_price( $saving ) )
-				: wp_strip_all_tags( wc_price( $base ) );
-			printf(
-				'<button type="button" class="cl-combo__opt%s" data-qty="%d" aria-pressed="%s"><strong>%s</strong><span>%s</span>%s</button>',
-				0 === $i ? ' is-on' : '',
-				$qty,
-				0 === $i ? 'true' : 'false',
-				esc_html( $label ),
-				esc_html( $note ),
-				calen_tier_pct( $qty ) ? '<em>-' . calen_tier_pct( $qty ) . '%</em>' : ''
-			);
-		}
-		echo '</div></fieldset>';
-		?>
-		<script>
-		document.addEventListener('click', function (e) {
-			var btn = e.target.closest('.cl-combo__opt');
-			if (!btn) return;
-			var form = btn.closest('form.cart');
-			var input = form && form.querySelector('input.qty');
-			if (input) { input.value = btn.dataset.qty; input.dispatchEvent(new Event('change', { bubbles: true })); }
-			btn.parentNode.querySelectorAll('.cl-combo__opt').forEach(function (b) {
-				b.classList.toggle('is-on', b === btn);
-				b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
-			});
-		});
 		</script>
 		<?php
 	}

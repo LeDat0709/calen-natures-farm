@@ -107,24 +107,15 @@ h1, h2, h3, .site-title { font-family: var(--global-heading-font-family); }
 	.cl-steps { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* Single product: benefit, combo picker, badges */
+/* Single product: benefit, badges */
 .cl-benefit { margin: 4px 0 2px; font-size: 18px; color: var(--cl-ink); }
 .cl-taste { margin: 0 0 12px; font-size: 14px; color: var(--cl-muted); }
-.cl-combo { border: 0; margin: 0 0 16px; padding: 0; width: 100%; }
-.cl-combo legend { font-weight: 600; font-size: 15px; margin-bottom: 10px; }
-.cl-combo__opts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
-.cl-combo__opt { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: 64px; padding: 12px 14px; border: 1px solid #d5d0bf; border-radius: 14px; background: var(--cl-paper); color: var(--cl-ink); font: inherit; text-align: left; cursor: pointer; }
-.cl-combo__opt span { font-size: 13px; color: var(--cl-muted); }
-.cl-combo__opt em { position: absolute; top: -9px; right: 10px; padding: 1px 8px; border-radius: 999px; background: #c8963e; color: var(--cl-ink); font-size: 11px; font-style: normal; font-weight: 600; }
-.cl-combo__opt.is-on { border: 2px solid var(--cl-green); background: #eef2e8; }
-.cl-combo__opt:focus-visible { outline: 2px solid var(--cl-green); outline-offset: 2px; }
 .cl-badges { list-style: none; margin: 16px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .cl-badges li { padding: 5px 12px; border: 1px solid var(--cl-line); border-radius: 999px; font-size: 13px; color: var(--cl-text); }
 .cl-assure { list-style: none; margin: 16px 0 0; padding: 16px 18px; border-radius: 16px; background: var(--cl-cream); display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; font-size: 14px; }
 .cl-assure li::before { content: "✓ "; color: var(--cl-green); font-weight: 600; }
 .cl-assure li:last-child::before { content: ""; }
 .cl-legal { clear: both; margin: 8px 0 24px; font-size: 13px; color: #6b7263; }
-@media (max-width: 420px) { .cl-combo__opts { grid-template-columns: minmax(0, 1fr); } }
 
 /* Reels */
 .cl-reels { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }

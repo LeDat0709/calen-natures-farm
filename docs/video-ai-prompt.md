@@ -3,6 +3,29 @@
 Theo đúng 7 cảnh sếp yêu cầu. Dùng cho Google Veo, Kling, Runway Gen-3, Sora, Pika, Hailuo…
 Phần lớn công cụ tạo clip 5–10 giây, nên quay **từng cảnh rồi ghép**. Prompt viết bằng tiếng Anh vì các tool chạy tốt hơn với tiếng Anh.
 
+---
+## ⭐ PROMPT CHUẨN — VIDEO 40 GIÂY (dán 1 lần)
+Dùng cho tool nhận cả kịch bản có mốc thời gian (**Sora, Veo 3, Kling 2.x**). Dán nguyên khối dưới đây:
+
+```
+A 40-second cinematic documentary brand video for a Vietnamese herbal tea company. Style: warm natural morning light, earthy green and wood tones, shallow depth of field, soft film grain, realistic 4K, 16:9. One consistent warm, calm Vietnamese FEMALE voiceover narrates throughout; soft gentle instrumental background music, no lyrics, no other voices. Smooth slow camera moves, one clear subject per shot.
+
+0:00–0:05 — Aerial drone slowly rising over a lush Vietnamese herbal farm at sunrise, golden light flooding rows of green plants, light mist, dew on leaves. Voiceover: "Mỗi ngày của Calen bắt đầu từ nông trại, khi mặt trời vừa lên."
+0:05–0:10 — Close-up of a farmer's hands gently picking fresh green herbs into a bamboo basket, soft morning light. Voiceover: "Thảo mộc được chọn hái bằng tay, đúng độ, đúng mùa."
+0:10–0:15 — Baskets of fresh herbs carried into a clean bright herbal workshop, daylight through windows. Voiceover: "Ngay trong ngày, nguyên liệu tươi về đến xưởng."
+0:15–0:20 — Fresh green herbs washed in clear running water in a stainless steel basin, droplets in slow motion. Voiceover: "Rửa sạch kỹ càng từng mẻ."
+0:20–0:25 — Herbs spread on drying trays in a low-temperature dryer, gentle warm air, macro detail. Voiceover: "Sấy ở nhiệt độ thấp, giữ trọn màu và hương tự nhiên."
+0:25–0:30 — Dried herbs ground into small pieces and blended by recipe, warm workshop light, close-up. Voiceover: "Nghiền mịn và phối trộn theo công thức riêng của Calen."
+0:30–0:35 — A machine filling small tea filter bags, bags packed into kraft boxes, sealed and stacked for shipping. Voiceover: "Đóng thành túi lọc, vào hộp, sẵn sàng đến tay bạn."
+0:35–0:40 — Hero product shot: a red herbal tea box beside a freshly brewed cup of tea on a wooden table, steam rising, warm cozy light. Voiceover: "Calen Nature's Farm — trà thảo mộc sạch từ nông trại. Nâng niu vẻ đẹp Á Đông."
+
+Negative prompt: text, letters, words, captions, logo, watermark, cartoon, distorted hands, extra fingers, deformed faces, morphing, flickering, blurry, oversaturated.
+```
+
+> **Cảnh cuối (0:35–0:40):** AI vẽ hộp sẽ chỉ na ná. Để đúng thương hiệu, sau khi dựng hãy **thay/đè bằng hộp Calen thật** (ảnh UG-UXO bạn gửi) — hoặc tạo riêng cảnh cuối bằng **image-to-video** từ ảnh hộp thật rồi ghép vào.
+> **Nếu tool chỉ tạo được 5–10 giây/clip** (Runway, Pika): dùng 8 prompt tách rời ở mục bên dưới, mỗi clip 5 giây, rồi ghép thành 40 giây.
+
+---
 ## Thiết lập chung (dán kèm mỗi cảnh)
 - **Style:** cinematic documentary, warm natural morning light, shallow depth of field, soft film grain, earthy green and wood tones, realistic, 4K.
 - **Aspect ratio:** 16:9 cho web (làm thêm bản 9:16 cho Reels/TikTok).

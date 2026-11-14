@@ -6,7 +6,7 @@ Mã nguồn của trang bán hàng calennaturesfarm.com (WordPress + WooCommerce
 
 | Thư mục | Nội dung |
 |---|---|
-| `calen-setup/` | Plugin WordPress chính: cài đặt cửa hàng (VND, COD, phí ship 30.000₫, menu, màu, font), thanh thông báo, nút Zalo/Gọi, trang sản phẩm |
+| `calen-setup/` | Plugin WordPress chính: cài đặt cửa hàng (VND, COD, miễn phí giao hàng mọi đơn, menu, màu, font), thanh thông báo, nút Zalo/Gọi, trang sản phẩm |
 | `calen-tests/` | Kiểm tra cách đọc thành phần (%) của sản phẩm |
 | `calen-design/` | Bản thiết kế trang chủ và trang sản phẩm (Claude Design) |
 | `assets/` | Ảnh minh hoạ do AI tạo, cần thay bằng ảnh thật |

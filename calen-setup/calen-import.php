@@ -39,7 +39,7 @@ function calen_import_lock(): bool {
 
 add_action( CALEN_IMPORT_HOOK, 'calen_import_batch' );
 
-const CALEN_STOREFRONT_FLAG = 'calen_storefront_v3'; // v3: one price for every product, combo text removed
+const CALEN_STOREFRONT_FLAG = 'calen_storefront_v4'; // v4: free shipping on every order
 const CALEN_FLAT_PRICE      = '200000'; // owner's request 2026-11-14: every product 200.000₫, no combos
 const CALEN_SHOPEE_SHOP_URL = 'https://shopee.vn/calennaturefarm';
 
@@ -54,12 +54,18 @@ add_action(
 		calen_import_menu();
 		calen_import_homepage();
 		calen_import_flat_price();
+		calen_setup_shipping();
 	},
 	40
 );
 
 /** Sets every product to CALEN_FLAT_PRICE and clears sale prices. */
 function calen_import_flat_price() {
+	// Runs once only, so later prices set by the owner in WP Admin are never overwritten. storefront_v3 already applied it.
+	if ( get_option( 'calen_storefront_v3' ) || get_option( 'calen_flat_price_done' ) ) {
+		return;
+	}
+	update_option( 'calen_flat_price_done', gmdate( 'c' ) );
 	$products = wc_get_products( array( 'limit' => -1, 'status' => array( 'publish', 'draft', 'private' ) ) );
 	foreach ( $products as $product ) {
 		$product->set_regular_price( CALEN_FLAT_PRICE );
@@ -113,6 +119,7 @@ function calen_import_homepage() {
 		'reviews'    => array( '#<section class="cl-section"[^>]*>\s*<div class="cl-wrap">\s*<div class="cl-head">\s*<div>\s*<h2 class="cl-h2">Khách hàng nói gì về Calen</h2>.*?</section>#s', calen_home_reviews() ),
 		'products'   => array( '#<div class="woocommerce columns-4\s*">\s*<ul class="products.*?</ul>\s*</div>#s', '[products limit="4" columns="4" visibility="featured"]' ),
 		'combo text' => array( '#Mua combo tiết kiệm thêm 7.{1,3}12%#u', 'Mua từ 2 hộp là được miễn phí giao hàng' ),
+		'freeship'   => array( '#<strong>Freeship từ 300\.000[^<]*</strong><span>[^<]*</span>#u', '<strong>Miễn phí giao hàng</strong><span>Cho mọi đơn, giao toàn quốc</span>' ),
 		'gift link'  => array( '#<a([^>]*)href="/product-category/qua-bieu/"([^>]*)>Xem hộp quà</a>#', '<a$1href="https://zalo.me/' . CALEN_PHONE . '" target="_blank" rel="noopener"$2>Nhắn Zalo đặt hộp quà</a>' ),
 	);
 	foreach ( $edits as $label => list( $pattern, $replacement ) ) {

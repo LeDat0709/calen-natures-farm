@@ -17,30 +17,12 @@ const CALEN_LEGAL = array(
 // Link from online.gov.vn after notifying Bộ Công Thương. The badge stays hidden until this is set.
 const CALEN_BCT_URL = '';
 
-const CALEN_FLAT_SHIPPING_VND = '30000'; // ponytail: placeholder fee, owner sets real GHN/GHTK rates later
-const CALEN_FREE_SHIPPING_MIN_VND = '300000'; // Freeship for orders from 300.000đ
-
 const CALEN_SETUP_FLAG = 'calen_setup_done_v7';
 
 if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (array) get_option( 'active_plugins' ), true ) ) {
 	require_once __DIR__ . '/calen-shop.php';
 	require_once __DIR__ . '/calen-import.php';
 }
-
-// Automatically choose free shipping and hide flat rate when cart total >= 300.000đ
-add_filter(
-	'woocommerce_package_rates',
-	function ( $rates ) {
-		$free = array();
-		foreach ( $rates as $rate_id => $rate ) {
-			if ( 'free_shipping' === $rate->get_method_id() ) {
-				$free[ $rate_id ] = $rate;
-			}
-		}
-		return ! empty( $free ) ? $free : $rates;
-	},
-	100
-);
 
 // Fonts + site styles from the Claude Design canvas.
 add_action(
@@ -92,7 +74,7 @@ add_filter(
 add_action(
 	'wp_body_open',
 	function () {
-		echo '<div class="cl-topbar"><div class="cl-wrap"><span>Giao hàng toàn quốc</span><span>Freeship đơn từ 300.000 ₫</span><span>Nhận hàng rồi trả tiền (COD)</span>'
+		echo '<div class="cl-topbar"><div class="cl-wrap"><span>Giao hàng toàn quốc</span><span>Miễn phí giao hàng mọi đơn</span><span>Nhận hàng rồi trả tiền (COD)</span>'
 			. '<span>Hotline <a href="tel:' . esc_attr( CALEN_PHONE ) . '">09888.36910</a></span></div></div>';
 	}
 );
@@ -261,6 +243,7 @@ function calen_setup_cod() {
 	);
 }
 
+/** Every order ships free: removes paid flat rates and keeps one free-shipping method with no minimum. */
 function calen_setup_shipping() {
 	$vn_zone = null;
 	foreach ( WC_Shipping_Zones::get_zones() as $zone_data ) {
@@ -276,41 +259,27 @@ function calen_setup_shipping() {
 		$vn_zone->save();
 	}
 
-	$has_flat = false;
-	$has_free = false;
+	$free_id = 0;
 	foreach ( $vn_zone->get_shipping_methods() as $instance_id => $method ) {
 		if ( 'flat_rate' === $method->id ) {
-			$has_flat = true;
-		}
-		if ( 'free_shipping' === $method->id ) {
-			$has_free = true;
+			$vn_zone->delete_shipping_method( $instance_id );
+		} elseif ( 'free_shipping' === $method->id && ! $free_id ) {
+			$free_id = $instance_id;
 		}
 	}
-
-	if ( ! $has_flat ) {
-		$flat_id = $vn_zone->add_shipping_method( 'flat_rate' );
-		update_option(
-			"woocommerce_flat_rate_{$flat_id}_settings",
-			array(
-				'title'      => 'Phí giao hàng toàn quốc',
-				'tax_status' => 'none',
-				'cost'       => CALEN_FLAT_SHIPPING_VND,
-			)
-		);
-	}
-
-	if ( ! $has_free ) {
+	if ( ! $free_id ) {
 		$free_id = $vn_zone->add_shipping_method( 'free_shipping' );
-		update_option(
-			"woocommerce_free_shipping_{$free_id}_settings",
-			array(
-				'title'            => 'Giao hàng miễn phí (Freeship đơn từ 300.000 ₫)',
-				'requires'         => 'min_amount',
-				'min_amount'       => CALEN_FREE_SHIPPING_MIN_VND,
-				'ignore_discounts' => 'no',
-			)
-		);
 	}
+	update_option(
+		"woocommerce_free_shipping_{$free_id}_settings",
+		array(
+			'title'            => 'Miễn phí giao hàng',
+			'requires'         => '',
+			'min_amount'       => '0',
+			'ignore_discounts' => 'no',
+		)
+	);
+	WC_Cache_Helper::get_transient_version( 'shipping', true );
 }
 
 // 4-column branded footer from Claude Design
@@ -348,7 +317,7 @@ add_action(
 						<li><a href="#chinh-sach">Đổi trả trong 7 ngày nếu lỗi sấy</a></li>
 						<li><a href="#chinh-sach">Đồng kiểm tra hàng khi nhận (COD)</a></li>
 						<li><a href="#chinh-sach">Giao hàng toàn quốc (2–4 ngày)</a></li>
-						<li><a href="#chinh-sach">Freeship cho đơn từ 300.000 ₫</a></li>
+						<li><a href="#chinh-sach">Miễn phí giao hàng mọi đơn</a></li>
 						<li><a href="#chinh-sach">Bảo mật thông tin khách hàng</a></li>
 					</ul>
 				</div>

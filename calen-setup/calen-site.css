@@ -316,3 +316,12 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .cl-hero__boxes .cl-box:nth-child(2) { transform: translateY(-26px) scale(1.06); z-index: 1; }
 .cl-hero__boxes .cl-float { z-index: 2; }
 @media (max-width: 600px) { .cl-hero__boxes { gap: 8px; padding: 18px 0 32px; } .cl-hero__boxes .cl-box { border-radius: 12px; } .cl-hero__boxes .cl-box:nth-child(2) { transform: translateY(-14px) scale(1.06); } }
+
+/* Shop/category filter pills */
+.cl-shopcats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 24px; }
+.cl-shopcats__pill { display: inline-flex; align-items: center; gap: 7px; padding: 9px 16px; border: 1px solid var(--cl-line); border-radius: 999px; background: var(--cl-paper); color: var(--cl-text); font-size: 15px; font-weight: 600; text-decoration: none; transition: border-color .15s, background .15s, color .15s; }
+.cl-shopcats__pill span { min-width: 20px; padding: 0 6px; border-radius: 999px; background: var(--cl-cream); color: var(--cl-muted); font-size: 12px; font-weight: 700; text-align: center; }
+.cl-shopcats__pill:hover { border-color: var(--cl-green); color: var(--cl-green-dark); }
+.cl-shopcats__pill.is-on { background: var(--cl-green); border-color: var(--cl-green); color: #fff; }
+.cl-shopcats__pill.is-on span { background: rgba(255,255,255,.22); color: #fff; }
+@media (max-width: 600px) { .cl-shopcats { gap: 8px; margin-bottom: 18px; } .cl-shopcats__pill { padding: 8px 13px; font-size: 14px; } }

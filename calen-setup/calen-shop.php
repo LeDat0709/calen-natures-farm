@@ -19,6 +19,46 @@ require_once __DIR__ . '/calen-composition.php';
 
 const CALEN_COMPOSITION_COLORS = array( '#3f5d32', '#c8963e', '#7a8f5c', '#b5654a', '#5a6352', '#d9c38a' );
 
+/** Category filter row on the shop and category pages, so customers can browse by the 9 need-based groups. */
+add_action(
+	'woocommerce_before_shop_loop',
+	function () {
+		if ( ! is_shop() && ! is_product_category() ) {
+			return;
+		}
+		$terms = get_terms(
+			array(
+				'taxonomy'   => 'product_cat',
+				'hide_empty' => true,
+				'orderby'    => 'count',
+				'order'      => 'DESC',
+			)
+		);
+		if ( is_wp_error( $terms ) || count( $terms ) < 2 ) {
+			return;
+		}
+		$current = is_product_category() ? get_queried_object_id() : 0;
+		echo '<nav class="cl-shopcats" aria-label="Lọc theo nhóm trà">';
+		printf(
+			'<a class="cl-shopcats__pill%s" href="%s">Tất cả<span>%d</span></a>',
+			is_shop() ? ' is-on' : '',
+			esc_url( wc_get_page_permalink( 'shop' ) ),
+			(int) wp_count_posts( 'product' )->publish
+		);
+		foreach ( $terms as $term ) {
+			printf(
+				'<a class="cl-shopcats__pill%s" href="%s">%s<span>%d</span></a>',
+				$term->term_id === $current ? ' is-on' : '',
+				esc_url( get_term_link( $term ) ),
+				esc_html( $term->name ),
+				(int) $term->count
+			);
+		}
+		echo '</nav>';
+	},
+	5
+);
+
 /** "★ 4.9 · Đã bán 10k+" from the Shopee listing (meta written by the importer); empty when unknown. */
 function calen_shopee_proof( WC_Product $product ): string {
 	$rating = trim( (string) $product->get_meta( 'calen_shopee_rating' ) );

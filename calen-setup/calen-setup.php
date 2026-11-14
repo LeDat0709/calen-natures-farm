@@ -25,6 +25,21 @@ if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (
 	require_once __DIR__ . '/calen-checkout.php';
 }
 
+// Kadence strings that its Vietnamese translation leaves in English (breadcrumb, 404 page).
+add_filter(
+	'gettext_kadence',
+	function ( $translation, $text ) {
+		$vi = array(
+			'Home'                                                                 => 'Trang chủ',
+			'Oops! That page can&rsquo;t be found.'                                => 'Không tìm thấy trang này',
+			'It looks like nothing was found at this location. Maybe try a search?' => 'Trang bạn tìm không tồn tại hoặc đã được chuyển. Thử tìm loại trà bạn cần bên dưới nhé.',
+		);
+		return $vi[ $text ] ?? $translation;
+	},
+	10,
+	2
+);
+
 // Fonts + site styles from the Claude Design canvas.
 add_action(
 	'wp_enqueue_scripts',

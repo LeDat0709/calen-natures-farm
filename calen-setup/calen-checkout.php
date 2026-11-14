@@ -7,7 +7,22 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/calen-phone.php';
+
 const CALEN_CHECKOUT_FLAG = 'calen_checkout_v1';
+
+/** WooCommerce only checks that a phone looks like digits; a wrong number means an undeliverable COD order. */
+add_action(
+	'woocommerce_after_checkout_validation',
+	function ( $data, $errors ) {
+		$phone = (string) ( $data['billing_phone'] ?? '' );
+		if ( '' !== $phone && ! calen_is_vn_phone( $phone ) ) {
+			$errors->add( 'validation', 'Số điện thoại chưa đúng. Vui lòng nhập số Việt Nam 10 chữ số, ví dụ 0988 836 910.' );
+		}
+	},
+	10,
+	2
+);
 
 /** The 34 provinces and cities after the 2025 merger. Keys are stored on orders. */
 const CALEN_VN_PROVINCES = array(

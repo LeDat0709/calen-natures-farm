@@ -252,3 +252,11 @@ a.cl-footer__bct { text-decoration: none; }
 /* Real Shopee figures in the reviews section */
 .cl-stat { display: block; margin-bottom: 8px; font-family: var(--global-heading-font-family); font-size: 40px; line-height: 1.1; font-weight: 600; color: var(--cl-green-dark); }
 .cl-review figcaption { color: var(--cl-text); }
+
+/* Buy now + short checkout */
+.cl-buynow { display: block; width: 100%; margin-top: 10px; min-height: 48px; border-radius: 999px; background: #c8963e !important; color: var(--cl-ink) !important; font-weight: 600; }
+.cl-buynow:hover { background: #b5852f !important; }
+.cl-hidden { display: none !important; }
+.woocommerce-checkout .woocommerce-billing-fields h3 { font-size: 20px; }
+.woocommerce-checkout .form-row input.input-text, .woocommerce-checkout .form-row select, .woocommerce-checkout .select2-selection { min-height: 48px; font-size: 16px; }
+.woocommerce-checkout #place_order { width: 100%; min-height: 54px; font-size: 18px; border-radius: 999px; }

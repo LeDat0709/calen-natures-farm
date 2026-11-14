@@ -22,6 +22,7 @@ const CALEN_SETUP_FLAG = 'calen_setup_done_v7';
 if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (array) get_option( 'active_plugins' ), true ) ) {
 	require_once __DIR__ . '/calen-shop.php';
 	require_once __DIR__ . '/calen-import.php';
+	require_once __DIR__ . '/calen-checkout.php';
 }
 
 // Fonts + site styles from the Claude Design canvas.
@@ -29,7 +30,7 @@ add_action(
 	'wp_enqueue_scripts',
 	function () {
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.8.0' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.9.0' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );
@@ -85,6 +86,9 @@ const CALEN_PALETTE    = array( '#3f5d32', '#2f4325', '#1f2a1b', '#2f3a2a', '#5a
 add_action(
 	'wp_footer',
 	function () {
+		if ( function_exists( 'is_checkout' ) && ( is_checkout() || is_cart() ) ) {
+			return; // on small screens they cover the form fields
+		}
 		$phone = esc_attr( CALEN_PHONE );
 		echo '<style>.calen-fab{position:fixed;right:16px;bottom:16px;z-index:9999;display:flex;flex-direction:column;gap:10px}'
 			. '.calen-fab a{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;'

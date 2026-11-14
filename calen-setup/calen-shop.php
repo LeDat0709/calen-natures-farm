@@ -114,7 +114,7 @@ add_action(
 		}
 		$in_stock = $product->is_in_stock() && $product->is_purchasable();
 		$action   = $in_stock
-			? '<button type="button" class="cl-stickybuy__btn" data-buy>Thêm vào giỏ</button>'
+			? '<button type="button" class="cl-stickybuy__btn" data-buy>Mua ngay</button>'
 			: '<a class="cl-stickybuy__btn" href="https://zalo.me/' . esc_attr( CALEN_PHONE ) . '" target="_blank" rel="noopener">Nhắn Zalo giữ hàng</a>';
 		echo '<div class="cl-stickybuy" aria-hidden="true"><div class="cl-stickybuy__info"><span class="cl-stickybuy__name">'
 			. esc_html( $product->get_name() ) . '</span><span class="cl-stickybuy__price">' . wp_kses_post( $product->get_price_html() ) . '</span></div>'
@@ -132,7 +132,8 @@ add_action(
 				document.body.classList.toggle('cl-stickybuy-on', show);
 			}).observe(target);
 			var buy = bar.querySelector('[data-buy]');
-			if (buy) buy.addEventListener('click', function () { target.click(); });
+			var buyNow = document.querySelector('form.cart .cl-buynow') || target;
+			if (buy) buy.addEventListener('click', function () { buyNow.click(); });
 		})();
 		</script>
 		<?php

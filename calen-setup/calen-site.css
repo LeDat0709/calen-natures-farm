@@ -333,3 +333,12 @@ form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px 
 .woocommerce ul.products li.product.content-bg,
 .woocommerce ul.products li.product { background-color: #fff !important; border-radius: 18px; box-shadow: 0 6px 18px rgba(31, 42, 27, .06); transition: box-shadow .15s, transform .15s; }
 .woocommerce ul.products li.product:hover { box-shadow: 0 12px 28px rgba(31, 42, 27, .10); transform: translateY(-2px); }
+
+/* Header menu: darker, bolder text so every item reads clearly on the white header */
+.header-navigation .menu-item > a,
+.main-navigation .menu-item > a { color: var(--cl-green-dark) !important; font-weight: 600 !important; }
+.header-navigation .menu-item > a:hover,
+.header-navigation .current-menu-item > a,
+.main-navigation .current-menu-item > a { color: var(--cl-ink) !important; }
+/* Mobile slide-out menu links too */
+.mobile-navigation .menu-item > a { color: var(--cl-ink) !important; font-weight: 600 !important; }

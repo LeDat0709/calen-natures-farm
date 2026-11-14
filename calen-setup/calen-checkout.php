@@ -86,6 +86,16 @@ add_action(
 	}
 );
 
+/** The default privacy line under the order button is English. */
+add_filter(
+	'woocommerce_get_privacy_policy_text',
+	function ( $text, $type ) {
+		return 'checkout' === $type ? 'Thông tin của bạn chỉ dùng để giao hàng và liên hệ về đơn hàng. Xem [privacy_policy].' : $text;
+	},
+	10,
+	2
+);
+
 add_filter(
 	'woocommerce_states',
 	function ( $states ) {

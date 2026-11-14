@@ -292,3 +292,20 @@ ul.products li.product .price, .cl-products ul.products li.product .price {
 .cl-pricenote__ship { padding: 3px 10px; border-radius: 999px; background: #e8f0e1; color: var(--cl-green-dark); font-weight: 700; font-size: 13px; }
 ul.products li.product { position: relative; }
 .cl-tag { position: absolute; top: 10px; left: 10px; z-index: 3; padding: 4px 10px; border-radius: 999px; background: var(--cl-green); color: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0.2px; pointer-events: none; }
+
+/* Header logo next to the site name */
+.site-branding .custom-logo-link { display: inline-flex; flex-shrink: 0; }
+.site-branding img.custom-logo { width: auto !important; max-width: none !important; height: 56px !important; border-radius: 50%; }
+.site-branding .site-title-wrap, .site-branding a.brand { gap: 12px; }
+@media (max-width: 600px) { .site-branding img.custom-logo { height: 42px !important; } }
+
+/* Space between the add-to-cart row and Mua ngay (the floated buttons swallow a top margin) */
+form.cart .quantity, form.cart .single_add_to_cart_button { margin-bottom: 14px !important; }
+
+/* Product names bold and dark everywhere a buyer reads them */
+.cl-stickybuy__name { color: var(--cl-ink) !important; font-weight: 700 !important; font-size: 14px !important; }
+.woocommerce-checkout-review-order-table .product-name,
+.woocommerce-cart-form .product-name a,
+.wc-block-components-product-name,
+.woocommerce-table--order-details .product-name a { font-weight: 700 !important; color: var(--cl-ink) !important; }
+@media (max-width: 600px) { .site-branding .site-title { font-size: 21px !important; line-height: 1.2 !important; white-space: nowrap; } }

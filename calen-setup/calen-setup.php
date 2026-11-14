@@ -89,7 +89,7 @@ add_action(
 			wp_enqueue_script( 'wc-cart-fragments' ); // pages come from the CDN cache, so the header cart count must refresh in the browser
 		}
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap', array(), null );
-		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '2.0.0' ); // priority 20: prints after Kadence's styles
+		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '2.0.3' ); // priority 20: prints after Kadence's styles
 	},
 	20
 );
@@ -234,6 +234,49 @@ function calen_setup_header_footer() {
 		array( 'include' => $everywhere, 'layout' => array( 'desktop' => 'standard', 'tablet' => 'standard', 'mobile' => 'standard' ) )
 	);
 	set_theme_mod( 'footer_html_content', '{copyright} {year} Calen Nature\'s Farm · Hotline 09888.36910' );
+}
+
+// Brand logo (assets/calen-logo.webp, from the owner) next to the site name in the header; added once to the media library.
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_logo_v1' ) ) {
+			return;
+		}
+		update_option( 'calen_logo_v1', gmdate( 'c' ) );
+		calen_setup_logo();
+	},
+	70
+);
+
+// The logo shows at 56px, so let the browser pick the 100/150px file instead of the 1418px original.
+add_filter(
+	'wp_get_attachment_image_attributes',
+	function ( $attr ) {
+		if ( isset( $attr['class'] ) && false !== strpos( $attr['class'], 'custom-logo' ) ) {
+			$attr['sizes'] = '56px'; // Kadence builds the logo with wp_get_attachment_image, not get_custom_logo
+		}
+		return $attr;
+	}
+);
+
+function calen_setup_logo() {
+	require_once ABSPATH . 'wp-admin/includes/file.php';
+	require_once ABSPATH . 'wp-admin/includes/media.php';
+	require_once ABSPATH . 'wp-admin/includes/image.php';
+	$tmp = wp_tempnam( 'calen-logo.webp' );
+	if ( ! copy( __DIR__ . '/assets/calen-logo.webp', $tmp ) ) {
+		error_log( 'Calen Setup: logo file could not be copied.' );
+		return;
+	}
+	$id = media_handle_sideload( array( 'name' => 'calen-logo.webp', 'tmp_name' => $tmp ), 0, "Logo Calen Nature's Farm" );
+	if ( is_wp_error( $id ) ) {
+		wp_delete_file( $tmp );
+		error_log( 'Calen Setup: logo not added: ' . $id->get_error_message() );
+		return;
+	}
+	update_post_meta( $id, '_wp_attachment_image_alt', "Logo Calen Nature's Farm" );
+	set_theme_mod( 'custom_logo', $id ); // Kadence shows logo + site title (logo_layout "logo_title")
 }
 
 function calen_setup_menu() {

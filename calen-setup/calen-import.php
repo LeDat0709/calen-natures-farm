@@ -81,6 +81,32 @@ add_action(
 	60
 );
 
+/** 199k–210k prices by Shopee price level (calen-pricing.php), applied once; later prices set in WP Admin are kept. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_price_tiers_v1' ) || ! function_exists( 'wc_get_product_id_by_sku' ) ) {
+			return;
+		}
+		$data = calen_import_data();
+		if ( ! $data ) {
+			return;
+		}
+		require_once __DIR__ . '/calen-pricing.php';
+		update_option( 'calen_price_tiers_v1', gmdate( 'c' ) );
+		foreach ( $data['products'] as $item ) {
+			$product = wc_get_product( wc_get_product_id_by_sku( 'SP-' . $item['shopee_id'] ) );
+			if ( ! $product ) {
+				continue;
+			}
+			$product->set_regular_price( (string) calen_price_for_shopee( (int) $item['price'] ) );
+			$product->set_sale_price( '' );
+			$product->save();
+		}
+	},
+	62
+);
+
 /** Shopee rating and sales shown next to prices, copied once from the data file (figures from 14/11/2026). */
 add_action(
 	'init',

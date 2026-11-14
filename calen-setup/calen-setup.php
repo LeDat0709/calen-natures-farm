@@ -25,6 +25,46 @@ if ( class_exists( 'WooCommerce' ) || in_array( 'woocommerce/woocommerce.php', (
 	require_once __DIR__ . '/calen-checkout.php';
 }
 
+// HTML was going out with max-age=604800, so browsers kept prices and cart counts for a week.
+// Browsers now re-check every page; the CDN may still keep a copy for 10 minutes (cleared on every deploy).
+add_action(
+	'send_headers',
+	function () {
+		if ( ! is_admin() ) {
+			header( 'Cache-Control: public, max-age=0, s-maxage=600, must-revalidate' );
+		}
+	}
+);
+
+// Keep the admin username private: no author pages, no ?author=N redirect, no public user list, no users sitemap.
+add_action(
+	'template_redirect',
+	function () {
+		if ( is_author() || isset( $_GET['author'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			wp_safe_redirect( home_url( '/' ), 301 );
+			exit;
+		}
+	},
+	1
+);
+add_filter(
+	'rest_endpoints',
+	function ( $endpoints ) {
+		if ( ! is_user_logged_in() ) {
+			unset( $endpoints['/wp/v2/users'], $endpoints['/wp/v2/users/(?P<id>[\d]+)'] );
+		}
+		return $endpoints;
+	}
+);
+add_filter(
+	'wp_sitemaps_add_provider',
+	function ( $provider, $name ) {
+		return 'users' === $name ? false : $provider;
+	},
+	10,
+	2
+);
+
 // Kadence strings that its Vietnamese translation leaves in English (breadcrumb, 404 page).
 add_filter(
 	'gettext_kadence',
@@ -44,6 +84,9 @@ add_filter(
 add_action(
 	'wp_enqueue_scripts',
 	function () {
+		if ( wp_script_is( 'wc-cart-fragments', 'registered' ) ) {
+			wp_enqueue_script( 'wc-cart-fragments' ); // pages come from the CDN cache, so the header cart count must refresh in the browser
+		}
 		wp_enqueue_style( 'calen-fonts', 'https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Be+Vietnam+Pro:wght@400;500;600&display=swap', array(), null );
 		wp_enqueue_style( 'calen-site', plugin_dir_url( __FILE__ ) . 'calen-site.css', array(), '1.9.3' ); // priority 20: prints after Kadence's styles
 	},

@@ -59,6 +59,28 @@ add_action(
 	40
 );
 
+/** Shop order = Shopee bestseller rank ("rank" in the data file), applied once; the owner can re-order in WP Admin afterwards. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_sort_v1' ) || ! function_exists( 'wc_get_product_id_by_sku' ) ) {
+			return;
+		}
+		$data = calen_import_data();
+		if ( ! $data ) {
+			return;
+		}
+		update_option( 'calen_sort_v1', gmdate( 'c' ) );
+		foreach ( $data['products'] as $item ) {
+			$id = wc_get_product_id_by_sku( 'SP-' . $item['shopee_id'] );
+			if ( $id && isset( $item['rank'] ) ) {
+				wp_update_post( array( 'ID' => $id, 'menu_order' => (int) $item['rank'] ) );
+			}
+		}
+	},
+	60
+);
+
 /** Sets every product to CALEN_FLAT_PRICE and clears sale prices. */
 function calen_import_flat_price() {
 	// Runs once only, so later prices set by the owner in WP Admin are never overwritten. storefront_v3 already applied it.

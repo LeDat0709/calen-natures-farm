@@ -9,28 +9,40 @@ Phần lớn công cụ tạo clip 5–10 giây, nên quay **từng cảnh rồi
 - **Negative prompt (loại bỏ):** `text, letters, words, captions, logo, watermark, cartoon, distorted hands, extra fingers, oversaturated`
 - **Lưu ý:** không để chữ quảng cáo công dụng xuất hiện trong khung hình.
 
-## 7 cảnh (mỗi cảnh ~6–8 giây)
+## 8 cảnh — MỖI CẢNH ĐỀU CÓ LỒNG TIẾNG (~6–8 giây)
+
+Mỗi cảnh gồm 2 phần: **hình** (dòng tiếng Anh) và **lồng tiếng** (dòng `Audio:`).
+- Với tool hỗ trợ âm thanh (**Google Veo 3, Kling 2.x có audio**): dán cả 2 dòng, tool tự đọc giọng theo cảnh.
+- Với tool chỉ tạo hình (Runway, Pika, Sora bản không audio): tạo hình trước, rồi **thu/ghép giọng đúng câu đó** ở bước dựng.
+- Giọng xuyên suốt: **một người, nữ (hoặc nam) miền Bắc, ấm, chậm, tin cậy** — giữ cùng một giọng cho cả 8 cảnh.
 
 **Cảnh 1 — Nông trại đón nắng sớm**
 `Aerial drone shot slowly rising over a lush Vietnamese herbal farm at sunrise, golden morning sunlight flooding rows of green medicinal plants, light mist, dew on leaves, peaceful, cinematic, 4K.`
+`Audio: warm calm Vietnamese female voiceover says: "Mỗi ngày của Calen bắt đầu từ nông trại, khi mặt trời vừa lên." Soft gentle background music, no other voices.`
 
 **Cảnh 2 — Thu hái dược liệu**
 `Close-up of a farmer's hands gently picking fresh green herbal leaves and flowers into a bamboo basket, soft morning light, shallow depth of field, authentic rural Vietnam, cinematic documentary.`
+`Audio: same warm Vietnamese female voiceover says: "Thảo mộc được chọn hái bằng tay, đúng độ, đúng mùa." Soft background music.`
 
 **Cảnh 3 — Về xưởng trong ngày**
 `Baskets of fresh herbs being carried into a clean herbal processing workshop, daylight through large windows, workers in aprons, calm and organized, cinematic.`
+`Audio: same warm Vietnamese female voiceover says: "Ngay trong ngày, nguyên liệu tươi về đến xưởng." Soft background music.`
 
 **Cảnh 4 — Rửa sạch**
 `Fresh green herbs being washed in clear running water in a stainless steel basin, water droplets splashing in slow motion, clean and hygienic, close-up, cinematic.`
+`Audio: same warm Vietnamese female voiceover says: "Rửa sạch kỹ càng từng mẻ." Gentle water sounds, soft music.`
 
 **Cảnh 5 — Sấy khô**
 `Herbs spread evenly on drying trays inside a low-temperature dryer, gentle warm air, herbs slowly drying and changing to deep green-brown, soft light, macro detail, cinematic.`
+`Audio: same warm Vietnamese female voiceover says: "Sấy ở nhiệt độ thấp, giữ trọn màu và hương tự nhiên." Soft background music.`
 
 **Cảnh 6 — Nghiền & phối trộn**
 `Dried herbs being ground into small pieces and measured on a scale, hands blending different dried herbs together by recipe, warm workshop light, close-up, cinematic.`
+`Audio: same warm Vietnamese female voiceover says: "Nghiền mịn và phối trộn theo công thức riêng của Calen." Soft background music.`
 
 **Cảnh 7 — Đóng túi lọc & gửi đi**
 `A machine filling small tea filter bags with ground herbs, bags packed into kraft paper boxes, boxes sealed and stacked ready for shipping, clean modern workshop, satisfying process, cinematic.`
+`Audio: same warm Vietnamese female voiceover says: "Đóng thành túi lọc, vào hộp, sẵn sàng đến tay bạn." Soft background music.`
 
 **Cảnh 8 (BẮT BUỘC) — Hộp trà Calen ở đoạn cuối**
 > Cảnh này phải có **hộp trà Calen thật**. AI không vẽ lại đúng nhãn/chữ trên hộp được, nên làm 1 trong 2 cách:
@@ -38,6 +50,8 @@ Phần lớn công cụ tạo clip 5–10 giây, nên quay **từng cảnh rồi
 > - **Nếu tạo hoàn toàn bằng AI (hộp sẽ chỉ na ná, không chính xác):**
 > `A red herbal tea box standing on a wooden table next to a freshly brewed cup of tea, steam rising, herbs beside it, warm cozy morning light, product hero shot, cinematic, shallow depth of field.`
 > Sau đó **dán logo + tên Calen thật đè lên** ở bước dựng để đúng thương hiệu.
+>
+> Lồng tiếng cảnh cuối: `Audio: same warm Vietnamese female voiceover says: "Calen Nature's Farm — trà thảo mộc sạch từ nông trại. Nâng niu vẻ đẹp Á Đông." Soft music swells gently.`
 
 ## Lời bình (lồng tiếng) — đọc theo từng cảnh
 Giọng ấm, chậm, tin cậy (nam hoặc nữ miền Bắc). Tổng ~45–55 giây. **Không nói công dụng chữa bệnh**, chỉ nói về quy trình, sự tử tế, chất lượng.

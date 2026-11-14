@@ -7,21 +7,35 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const CALEN_IMPORT_DONE  = 'calen_shopee_import_done_v1';
-const CALEN_IMPORT_NEXT  = 'calen_shopee_import_next';
-const CALEN_IMPORT_HOOK  = 'calen_shopee_import_batch';
-const CALEN_IMPORT_BATCH = 3; // products per cron run, 4 images each
+const CALEN_IMPORT_DONE     = 'calen_shopee_import_done_v2'; // v2: re-run after v1 skipped one product when two runs overlapped
+const CALEN_IMPORT_NEXT     = 'calen_shopee_import_next_v2';
+const CALEN_IMPORT_LOCK     = 'calen_shopee_import_lock';
+const CALEN_IMPORT_LOCK_TTL = 300; // seconds; a lock older than this is treated as left behind by a crashed run
+const CALEN_IMPORT_HOOK     = 'calen_shopee_import_batch';
+const CALEN_IMPORT_BATCH    = 3; // products per cron run, 4 images each
 
 add_action(
 	'init',
 	function () {
-		if ( get_option( CALEN_IMPORT_DONE ) || wp_next_scheduled( CALEN_IMPORT_HOOK ) ) {
+		if ( get_option( CALEN_IMPORT_DONE ) || get_option( CALEN_IMPORT_LOCK ) || wp_next_scheduled( CALEN_IMPORT_HOOK ) ) {
 			return;
 		}
 		wp_schedule_single_event( time(), CALEN_IMPORT_HOOK );
 	},
 	30
 );
+
+/** add_option fails when the row exists, so only one run can hold the lock at a time. */
+function calen_import_lock(): bool {
+	if ( add_option( CALEN_IMPORT_LOCK, time(), '', 'no' ) ) {
+		return true;
+	}
+	if ( time() - (int) get_option( CALEN_IMPORT_LOCK ) > CALEN_IMPORT_LOCK_TTL ) {
+		delete_option( CALEN_IMPORT_LOCK );
+		return add_option( CALEN_IMPORT_LOCK, time(), '', 'no' );
+	}
+	return false;
+}
 
 add_action( CALEN_IMPORT_HOOK, 'calen_import_batch' );
 
@@ -163,8 +177,11 @@ function calen_import_batch() {
 		update_option( CALEN_IMPORT_DONE, 'error: invalid data file' );
 		return;
 	}
+	if ( ! calen_import_lock() ) {
+		return; // another run is busy; it schedules the next batch itself
+	}
 	if ( function_exists( 'set_time_limit' ) ) {
-		set_time_limit( 300 );
+		set_time_limit( CALEN_IMPORT_LOCK_TTL );
 	}
 	$cat_ids = calen_import_categories( $data['cats'] );
 	$start   = (int) get_option( CALEN_IMPORT_NEXT, 0 );
@@ -174,6 +191,7 @@ function calen_import_batch() {
 	}
 	$next = $start + count( $slice );
 	update_option( CALEN_IMPORT_NEXT, $next );
+	delete_option( CALEN_IMPORT_LOCK );
 	if ( $next >= count( $data['products'] ) ) {
 		update_option( CALEN_IMPORT_DONE, gmdate( 'c' ) );
 		return;

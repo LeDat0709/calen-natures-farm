@@ -7,6 +7,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+require_once __DIR__ . '/calen-pricing.php'; // tier prices, so imported products get the website price, not the raw Shopee price
+
 const CALEN_IMPORT_DONE     = 'calen_shopee_import_done_v2'; // v2: re-run after v1 skipped one product when two runs overlapped
 const CALEN_IMPORT_NEXT     = 'calen_shopee_import_next_v2';
 const CALEN_IMPORT_LOCK     = 'calen_shopee_import_lock';
@@ -40,7 +42,6 @@ function calen_import_lock(): bool {
 add_action( CALEN_IMPORT_HOOK, 'calen_import_batch' );
 
 const CALEN_STOREFRONT_FLAG = 'calen_storefront_v4'; // v4: free shipping on every order
-const CALEN_FLAT_PRICE      = '200000'; // owner's request 2026-11-14: every product 200.000₫, no combos
 const CALEN_SHOPEE_SHOP_URL = 'https://shopee.vn/calennaturefarm';
 
 /** Once the new categories exist, point the homepage and menu at them (runs once). */
@@ -53,7 +54,6 @@ add_action(
 		update_option( CALEN_STOREFRONT_FLAG, gmdate( 'c' ) );
 		calen_import_menu();
 		calen_import_homepage();
-		calen_import_flat_price();
 		calen_setup_shipping();
 	},
 	40
@@ -92,7 +92,6 @@ add_action(
 		if ( ! $data ) {
 			return;
 		}
-		require_once __DIR__ . '/calen-pricing.php';
 		update_option( 'calen_price_tiers_v1', gmdate( 'c' ) );
 		foreach ( $data['products'] as $item ) {
 			$product = wc_get_product( wc_get_product_id_by_sku( 'SP-' . $item['shopee_id'] ) );
@@ -130,22 +129,29 @@ add_action(
 	61
 );
 
-/** Sets every product to CALEN_FLAT_PRICE and clears sale prices. */
-function calen_import_flat_price() {
-	// Runs once only, so later prices set by the owner in WP Admin are never overwritten. storefront_v3 already applied it.
-	if ( get_option( 'calen_storefront_v3' ) || get_option( 'calen_flat_price_done' ) ) {
-		return;
-	}
-	update_option( 'calen_flat_price_done', gmdate( 'c' ) );
-	$products = wc_get_products( array( 'limit' => -1, 'status' => array( 'publish', 'draft', 'private' ) ) );
-	foreach ( $products as $product ) {
-		$product->set_regular_price( CALEN_FLAT_PRICE );
-		$product->set_sale_price( '' );
-		$product->set_date_on_sale_from( null );
-		$product->set_date_on_sale_to( null );
-		$product->save();
-	}
-}
+/** v2: also copies the review count, so the Product schema can show an aggregate rating with its source. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'calen_shopee_proof_v2' ) || ! function_exists( 'wc_get_product_id_by_sku' ) ) {
+			return;
+		}
+		$data = calen_import_data();
+		if ( ! $data ) {
+			return;
+		}
+		update_option( 'calen_shopee_proof_v2', gmdate( 'c' ) );
+		foreach ( $data['products'] as $item ) {
+			$id = wc_get_product_id_by_sku( 'SP-' . $item['shopee_id'] );
+			if ( $id ) {
+				update_post_meta( $id, 'calen_shopee_rating', $item['rating'] );
+				update_post_meta( $id, 'calen_shopee_sold', $item['sold'] );
+				update_post_meta( $id, 'calen_shopee_reviews', $item['reviews'] );
+			}
+		}
+	},
+	61
+);
 
 /** Swaps the old "Ngủ ngon" and "Quà biếu" menu links for the two biggest real categories. */
 function calen_import_menu() {
@@ -474,7 +480,7 @@ function calen_import_product( array $item, array $cat_ids, string $image_base, 
 	$product = new WC_Product_Simple();
 	$product->set_name( $item['name'] );
 	$product->set_sku( $sku );
-	$product->set_regular_price( (string) (int) $item['price'] );
+	$product->set_regular_price( (string) calen_price_for_shopee( (int) $item['price'] ) ); // website tier price, not the raw Shopee price
 	$product->set_status( 'publish' );
 	$product->set_featured( ! empty( $item['featured'] ) );
 	$product->set_category_ids( isset( $cat_ids[ $item['cat'] ] ) ? array( $cat_ids[ $item['cat'] ] ) : array() );
@@ -485,6 +491,9 @@ function calen_import_product( array $item, array $cat_ids, string $image_base, 
 	}
 	$product->update_meta_data( 'calen_pack', $item['pack'] );
 	$product->update_meta_data( 'calen_shopee_url', $shopee_url );
+	$product->update_meta_data( 'calen_shopee_rating', $item['rating'] ?? '' );
+	$product->update_meta_data( 'calen_shopee_sold', $item['sold'] ?? '' );
+	$product->update_meta_data( 'calen_shopee_reviews', $item['reviews'] ?? '' );
 	if ( ! $product->save() ) {
 		error_log( "Calen import: product {$sku} not saved." );
 	}

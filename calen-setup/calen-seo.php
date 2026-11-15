@@ -127,6 +127,15 @@ add_action(
 				),
 			);
 			calen_seo_jsonld( $graph );
+		} elseif ( is_product() ) {
+			$product = wc_get_product( get_queried_object_id() );
+			if ( $product ) {
+				$graph = array( calen_seo_product( $product, $c ) );
+				if ( $crumbs = calen_seo_breadcrumbs() ) {
+					$graph[] = $crumbs;
+				}
+				calen_seo_jsonld( $graph );
+			}
 		} elseif ( $crumbs = calen_seo_breadcrumbs() ) {
 			calen_seo_jsonld( array( $crumbs ) );
 		}
@@ -139,6 +148,43 @@ function calen_seo_jsonld( array $graph ) {
 		array( '@context' => 'https://schema.org', '@graph' => $graph ),
 		JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES
 	) . '</script>' . "\n";
+}
+
+/** Product schema for Google rich results: name with pack size, price, stock, and the Shopee rating when known. */
+function calen_seo_product( WC_Product $product, array $c ): array {
+	$pack  = trim( (string) $product->get_meta( 'calen_pack' ) );
+	$name  = $product->get_name();
+	$label = ( $pack && false === mb_stripos( $name, $pack ) ) ? "{$name} ({$pack})" : $name;
+	$schema = array(
+		'@type'       => 'Product',
+		'name'        => $label,
+		'image'       => $c['image'],
+		'description' => calen_seo_trim( $c['desc'] ),
+		'brand'       => array(
+			'@type' => 'Brand',
+			'name'  => CALEN_SITE_NAME,
+		),
+		'offers'      => array(
+			'@type'         => 'Offer',
+			'url'           => $c['url'],
+			'priceCurrency' => 'VND',
+			'price'         => $c['price'],
+			'availability'  => $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
+			'itemCondition' => 'https://schema.org/NewCondition',
+		),
+	);
+	// The rating is only shown with a review count from the same Shopee listing, so Google never sees a rating without its source.
+	$rating  = trim( (string) $product->get_meta( 'calen_shopee_rating' ) );
+	$reviews = trim( (string) $product->get_meta( 'calen_shopee_reviews' ) );
+	if ( '' !== $rating && '' !== $reviews && (int) $reviews > 0 ) {
+		$schema['aggregateRating'] = array(
+			'@type'       => 'AggregateRating',
+			'ratingValue' => (float) $rating,
+			'reviewCount' => (int) $reviews,
+			'bestRating'  => '5',
+		);
+	}
+	return $schema;
 }
 
 /** BreadcrumbList so Google shows Trang chủ › Cửa hàng › Nhóm › Sản phẩm under the result. Null off product/category pages. */

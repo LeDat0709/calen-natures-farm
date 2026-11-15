@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Calen Setup
  * Description: Calen Nature's Farm store setup (Vietnamese, VND, COD, shipping, Kadence colors) and floating Zalo/call buttons. Keep active for the buttons.
- * Version: 1.4.1
+ * Version: 1.4.2
  */
 
 defined( 'ABSPATH' ) || exit;
